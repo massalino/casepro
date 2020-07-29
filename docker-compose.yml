@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  postgres:
+      image: ${DOCKER_IMAGE_NAME:-massalino/casepro_postgres}:${DOCKER_IMAGE_TAG:-latest}    
+      build: postgres
+      restart: always
+      env_file: docker-compose.env
+  redis:
+    image: "redis:alpine"
+  web:
+    image: ${DOCKER_IMAGE_NAME:-massalino/casepro}:${DOCKER_IMAGE_TAG:-latest}      
+    build: .
+    command: bash -c "python /code/manage.py migrate --noinput && python /code/manage.py runserver 0.0.0.0:8000"
+    #stdin_open: true
+    #tty: true
+    #volumes:
+    #  - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis  
+      - postgres
+    restart: always
+  celery1:
+    image: ${DOCKER_IMAGE_NAME:-massalino/casepro_celery1}:${DOCKER_IMAGE_TAG:-latest}      
+    build: .
+    command: bash -c "cd /code && celery worker -A casepro -Q celery -B -n casepro.celery --loglevel=INFO"
+    #volumes:
+    #  - .:/code
+    depends_on:
+      - redis
+  celery2:
+    image: ${DOCKER_IMAGE_NAME:-massalino/casepro_celery2}:${DOCKER_IMAGE_TAG:-latest}
+    build: .
+    command: bash -c "cd /code && celery worker -A casepro -Q sync -n casepro.sync --loglevel=INFO"
+    #volumes:
+    #  - .:/code
+    depends_on:
+      - redis
+  

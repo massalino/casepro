@@ -17,6 +17,8 @@ smartmin
 
 boto
 celery
+coffee
+#coffee-script
 colorama
 gunicorn
 iso-639

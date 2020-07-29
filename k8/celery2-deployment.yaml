@@ -1,0 +1,25 @@
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: celery2
+spec:
+  selector:
+    matchLabels:
+      app: celery2
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: celery2
+        tier: backend
+    spec:
+      containers:
+      - name: celery2
+        image: massalino/casepro_celery2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 8000
