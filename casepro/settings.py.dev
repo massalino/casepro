@@ -1,7 +1,7 @@
 # import our default settings
 from casepro.settings_common import *  # noqa
 
-ALLOWED_HOSTS = ["localhost", ".localhost"]
+ALLOWED_HOSTS = ["*"]
 
 # INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar.apps.DebugToolbarConfig',)
 # MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
@@ -18,9 +18,16 @@ DATABASES = {
         "NAME": "casepro",
         "USER": "casepro",
         "PASSWORD": "nyaruka",
-        "HOST": "localhost",
+        "HOST": "postgres",
         "PORT": "",
         "ATOMIC_REQUESTS": True,
         "OPTIONS": {},
     }
 }
+
+
+BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
